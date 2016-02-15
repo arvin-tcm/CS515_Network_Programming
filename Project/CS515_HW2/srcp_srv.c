@@ -72,6 +72,7 @@ int main(int argc, char** argv) {
         printf("connection accepted\n");
         /* key loop to handle file transfer */
         while ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
+            printf("first package received\n");
             if (parseReq(reqBuf, n, filePathBuf)) {
                 char *buffer = 'U';
                 write(connFd, buffer, 1);

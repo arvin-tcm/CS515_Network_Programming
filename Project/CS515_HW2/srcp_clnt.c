@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
     /* main */
     printf("connect built\n");
 
-    if (write(sockFd, filePathBuf, strlen(filePathBuf)) < 0) {
+    if (write(sockFd, filePathBuf, BUF_SIZE) < 0) {
         perror("request failed");
         exit(1);
     }
