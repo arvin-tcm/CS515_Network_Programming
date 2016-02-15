@@ -62,7 +62,14 @@ int main(int argc, char** argv) {
     }
 
     /* main */
+    printf("connect built\n");
 
+    if (write(sockFd, filePathBuf, strlen(filePathBuf)) < 0) {
+        perror("request failed");
+        exit(1);
+    }
+
+    printf("wait for acknowledge\n");
     if (read(sockFd, buffer, 1) < 0) {
         perror("request rejected");
         exit(1);

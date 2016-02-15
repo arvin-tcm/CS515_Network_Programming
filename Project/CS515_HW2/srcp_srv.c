@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
         perror("listen error");
         exit(1);
     }
-
+    printf("start to listen\n");
     /* loop forever */
     while (1) {
         len = sizeof (cliAddr);
@@ -69,12 +69,13 @@ int main(int argc, char** argv) {
             perror("accept error");
             exit(1);
         }
-
+        printf("connection accepted\n");
         /* key loop to handle file transfer */
         while ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
             if (parseReq(reqBuf, n, filePathBuf)) {
                 write(connFd, 'U', 1);
             }
+            printf("acknowledge sent\n");
             doTransfer(connFd, filePathBuf);
         }
         close(connFd);
