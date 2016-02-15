@@ -27,13 +27,13 @@
 char ipBuf[BUF_SIZE + 10];
 char filePathBuf[BUF_SIZE + 10];
 
-int parseReq(char *inBuf);
+int parseReq(char *inBuf, char opCode);
 
 int main(int argc, char** argv) {
     int sockFd;
     struct sockaddr_in servAddr;
     int n, msgLen;
-    char *buffer;
+    char buffer[5];
 
     /* a simple command line argument processing */
     if (argc != 2) {
@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     }
 
     /* data process */
-    parseReq(argv[1]);
+    parseReq(argv[1], 'U');
 
     /* open a socket */
     if ((sockFd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -63,8 +63,8 @@ int main(int argc, char** argv) {
 
     /* main */
     printf("connect built\n");
-    printf("package sending:\n%s\n", filePathBuf);
-    if (write(sockFd, filePathBuf, BUF_SIZE) < 0) {
+    printf("package sending:\n%s, %d\n", filePathBuf, strlen(filePathBuf));
+    if (write(sockFd, filePathBuf, strlen(filePathBuf)) < 0) {
         perror("request failed");
         exit(1);
     }
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     return (EXIT_SUCCESS);
 }
 
-int parseReq(char *inBuf) {
+int parseReq(char *inBuf, char opCode) {
     char *p;
     p = strchr(inBuf, ':');
     if (p == NULL) {
@@ -91,6 +91,7 @@ int parseReq(char *inBuf) {
     }
     *p = 0;
     strcpy(ipBuf, inBuf);
-    strcpy(filePathBuf, p + 1);
+    filePathBuf[0] = opCode;
+    strcpy(filePathBuf + 1, p + 1);
     return SUCCESS;
 }
