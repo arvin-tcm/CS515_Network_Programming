@@ -1,0 +1,18 @@
+=====================================================================
+Overview of files for the myerror lib version of the  netcalc example
+=====================================================================
+
+This is variation 1 of the version 1 of the netcalc example.  It does not use
+the wrapper functions contained in the library from the text book (libunp.a).  
+It does use, however, the err_xxx functions which originates from the APUE 
+book and is easily available with the myerror.h and myerror.c file.
+
+1. Files 
+    Makefile                : make file for the netcalc example 
+    netcalc.h               : general header file
+    netcalc_util.c          : common utility functions for socket
+    netcalc_app_srv.c       : application layer of the server
+    netcalc_app_clnt.c      : application layer of the client (needs to 
+                              implement the user interface)
+    netcalc_srv.c           : version 1 of the server
+    netcalc_clnt.c          : version 1 of the client

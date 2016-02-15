@@ -1,0 +1,17 @@
+====================================================
+Overview of files for the standalone netcalc example
+====================================================
+
+This is the first version of the netcalc example.  It uses the wrapper 
+functions contained in the library from the text book (libunp.a).  It is 
+separated from the main directory (..) to make it simple to understand.
+
+1. Files 
+    Makefile                : make file for the netcalc example 
+    netcalc.h               : general header file
+    netcalc_util.c          : common utility functions for socket
+    netcalc_app_srv.c       : application layer of the server
+    netcalc_app_clnt.c      : application layer of the client (needs to 
+                              implement the user interface)
+    netcalc_srv.c           : version 1 of the server
+    netcalc_clnt.c          : version 1 of the client

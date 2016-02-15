@@ -1,0 +1,17 @@
+================================================================
+Overview of files for the no lib version of the  netcalc example
+================================================================
+
+This is variation 2 of the version 1 of the netcalc example.  It does not use
+any wrapper functions.  This is the most portable form of the code.  But it 
+lacks the code simplicity that the wrapper functions provides.
+
+1. Files 
+    Makefile                : make file for the netcalc example 
+    netcalc.h               : general header file
+    netcalc_util.c          : common utility functions for socket
+    netcalc_app_srv.c       : application layer of the server
+    netcalc_app_clnt.c      : application layer of the client (needs to 
+                              implement the user interface)
+    netcalc_srv.c           : version 1 of the server
+    netcalc_clnt.c          : version 1 of the client

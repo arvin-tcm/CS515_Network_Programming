@@ -1,0 +1,62 @@
+==============================================================
+Overview of files and sub-directories for the netcalc examples
+==============================================================
+
+1. Files shared by the client and server
+    Makefile                : make file for all the netcalc examples 
+    netcalc.h               : general header file
+    netcalc_util_soc.c      : common utility functions for socket only
+
+2. Server files
+    netcalc_app_srv.c       : application layer of the server
+    netcalc_srv_main.c      : main function for server (ver 2, 3, 4, and 5)
+    netcalc_srv.c           : version 1 of the server (main included)
+    netcalc_srv_v2.c        : version 2 of the server (main not included)
+    netcalc_srv_v3.c        : version 3 of the server (main not included)
+    netcalc_srv_v4.c        : version 4 of the server (main not included)
+    netcalc_srv_v5.c        : version 5 of the server (main not included)
+    netcalc_srv_v6.c        : version 6 of the server (main included)
+
+3. Client files
+    netcalc_app_clnt.c      : application layer of the client (needs to 
+                              implement the user interface)
+    netcalc_clnt_main.c     : main function for client (ver 2, 3, and 4)
+    netcalc_clnt.c          : version 1 of the client (main included)
+    netcalc_clnt_v2.c       : version 2 of the client (main not included)
+    netcalc_clnt_v3.c       : version 3 of the client (main not included)
+    netcalc_clnt_v4.c       : version 4 of the client (main not included)
+    netcalc_clnt_udp.c      : udp version of the client (main included)
+
+4. Testers
+    netcalc_test.c          : special client for testing
+    netcalc_test_file_1.txt : test file 1 for input re-direction
+    netcalc_test_file_2.txt : test file 2 for input re-direction
+
+5. Sub-directories
+    var0                    : original example (text book wrappers)
+    var1                    : variation 1 of the example (err_ wrappers)
+    var2                    : variation 2 of the example (no wrappers)
+
+===============================
+overview of the server versions
+===============================
+    version 1               : base
+    version 2               : version 1 + host/address lookup, internet 
+                              address conversion, sock info, and 
+                              application record
+    version 3               : version 2 + fork child server + signal
+    version 4               : version 2 + io multiplexing (a bug in it as
+                              it will fail test case 2)
+    version 5               : version 2 + thread for each client
+    version 6               : version 3 + udp
+
+===============================
+overview of the client versions
+===============================
+    version 1               : base
+    version 2               : version 1 + host/address lookup, internet 
+                              address conversion, sock info, and 
+                              application record
+    version 3               : version 2 + batch mode (io multiplexing)
+    version 4               : version 2 + batch mode (threads)
+    version udp             : version 3 in udp mode
