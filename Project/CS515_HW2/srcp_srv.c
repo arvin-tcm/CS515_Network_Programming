@@ -73,12 +73,14 @@ int main(int argc, char** argv) {
         /* key loop to handle file transfer */
         while ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
             if (parseReq(reqBuf, n, filePathBuf)) {
-                write(connFd, 'U', 1);
+                char *buffer = 'U';
+                write(connFd, buffer, 1);
             }
             printf("acknowledge sent\n");
             doTransfer(connFd, filePathBuf);
         }
         close(connFd);
+        printf("reset\n");
     }
     close(listenFd);
     return (EXIT_SUCCESS);

@@ -74,8 +74,9 @@ int main(int argc, char** argv) {
         perror("request rejected");
         exit(1);
     }
-
+    printf("acknowledge received\n");
     if (buffer[0] == OPCODE_UPLOAD) {
+        printf("start file transfer\n");
         doTransfer(sockFd, filePathBuf);
     }
     return (EXIT_SUCCESS);
