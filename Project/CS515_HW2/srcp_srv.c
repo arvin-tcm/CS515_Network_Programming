@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
             perror("accept error");
             exit(1);
         }
-        printf("connection accepted\n");
+        printf("connection accepted \n");
         /* key loop to handle file transfer */
         while ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
             printf("first package received\n");
