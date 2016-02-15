@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
     /* a simple command line argument processing */
     if (argc != 1) {
-        fprintf(stderr, "Usage: %s");
+        fprintf(stderr, "Usage: ");
         exit(1);
     }
 
@@ -70,9 +70,9 @@ int main(int argc, char** argv) {
             exit(1);
         }
         printf("connection accepted \n");
-        /* key loop to handle file transfer */
-        while ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
-            printf("first package received\n");
+        /* key to handle file transfer */
+        if ((n = read(connFd, reqBuf, BUF_SIZE)) > 0) {
+            printf("first package received:\n%s\n", reqBuf);
             if (parseReq(reqBuf, n, filePathBuf)) {
                 char *buffer = 'U';
                 write(connFd, buffer, 1);

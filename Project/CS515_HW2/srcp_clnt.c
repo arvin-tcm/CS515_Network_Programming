@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 
     /* main */
     printf("connect built\n");
-
+    printf("package sending:\n%s\n", filePathBuf);
     if (write(sockFd, filePathBuf, BUF_SIZE) < 0) {
         perror("request failed");
         exit(1);
