@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     printf("connect built\n");
     printf("package sending:\n%s, %d\n", filePathBuf, strlen(filePathBuf));
 	/* test packet */    
-	buffer = "test"	
+	buffer = "test";	
 	if (write(sockFd, buffer, strlen(buffer)) < 0) {
 		perror("request failed");
 		exit(1);

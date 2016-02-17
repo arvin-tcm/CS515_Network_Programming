@@ -22,8 +22,8 @@
  * 
  */
 
-char reqBuf[BUF_SIZE + 10];
-char filePathBuf[BUF_SIZE + 10];
+static char reqBuf[BUF_SIZE + 10];
+static char filePathBuf[BUF_SIZE + 10];
 
 int parseReq(char *inBuf, int inBufLen, char *outBuf);
 
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     /* setup the server address and bind it */
     bzero(&servAddr, sizeof (servAddr));
     servAddr.sin_family = AF_INET;
-    servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    servAddr.sin_addr.s_addr = INADDR_ANY;
     servAddr.sin_port = htons(SRCP_SERV_PORT);
 
     if (bind(listenFd, (struct sockaddr *) &servAddr, sizeof (servAddr)) < 0) {
@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
         len = sizeof (cliAddr);
 
         /* wait for connection */
-        if ((connFd = accept(listenFd, (struct sockaddr*) &cliAddr, &len) < 0)) {
+        if ((connFd = accept(listenFd, (struct sockaddr*) &cliAddr, (socklen_t *) &len) < 0)) {
             perror("accept error");
             exit(1);
         }

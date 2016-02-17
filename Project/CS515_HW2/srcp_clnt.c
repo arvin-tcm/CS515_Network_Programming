@@ -24,8 +24,8 @@
 /*
  * 
  */
-char ipBuf[BUF_SIZE + 10];
-char filePathBuf[BUF_SIZE + 10];
+static char ipBuf[BUF_SIZE + 10];
+static char filePathBuf[BUF_SIZE + 10];
 
 int parseReq(char *inBuf, char opCode);
 
