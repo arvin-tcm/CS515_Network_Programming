@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
             perror("accept error");
             exit(1);
         }
+	printf("len: %d\n", len);
         printf("connection accepted \n");
         /* key to handle file transfer */
 	if (getpeername(connFd, (struct sockaddr*) &cliAddr, &len) < 0 ){
