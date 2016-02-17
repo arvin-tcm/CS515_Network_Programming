@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     int sockFd;
     struct sockaddr_in servAddr;
     int n, msgLen;
-    char buffer[5];
+    char* buffer;
 
     /* a simple command line argument processing */
     if (argc != 2) {
@@ -64,11 +64,18 @@ int main(int argc, char** argv) {
     /* main */
     printf("connect built\n");
     printf("package sending:\n%s, %d\n", filePathBuf, strlen(filePathBuf));
+	/* test packet */    
+	buffer = "test";	
+	if (write(sockFd, buffer, strlen(buffer)) < 0) {
+		perror("request failed");
+		exit(1);
+	}
+/*
     if (write(sockFd, filePathBuf, strlen(filePathBuf)) < 0) {
         perror("request failed");
         exit(1);
     }
-
+*/
     printf("wait for acknowledge\n");
     if (read(sockFd, buffer, 1) < 0) {
         perror("request rejected");
