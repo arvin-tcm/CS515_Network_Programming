@@ -78,7 +78,7 @@ int main(int argc, char** argv) {
     /* start transfer */
     if(filePathBuff[0] == buffer[0]) {
         printf("transfer confirm\n");
-        doTransfer(sock_fd, filePathBuff + 1);
+        doReceive(sock_fd, filePathBuff + 1);
     }
     
     

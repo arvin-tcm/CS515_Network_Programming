@@ -148,7 +148,7 @@ void srcp_process_client(int conn_fd) {
     }
 
     /* start file copy operation */
-    doReceive(conn_fd, filePathBuff + 1);
+    doTransfer(conn_fd, filePathBuff + 1);
 }
 
 int srcp_process_client_data(char* buffer, int msg_size) {
