@@ -1,1 +1,157 @@
-This is a test file
+Share this:
+
+    TwitterFacebook6GoogleRedditMore
+
+Related
+
+Java and .Net Taking On Contenders And WinningAugust 17, 2008In "Future"
+
+A Closure Is Not Always A Closure In RubyMarch 27, 2013In "coding"
+
+Ruby Procs And Lambdas (And The Difference Between Them)May 28, 2010In "coding"
+
+    About
+    Contact
+    Follow me on Twitter
+
+SKORKS
+How To Quickly Generate A Large File On The Command Line (With Linux)
+March 21, 2010 By Alan Skorkin 29 Comments
+
+GeneratorThere comes a time in every developers life where they need a data file for testing purposes and there are none handy. Rather than searching around for a file that fits your needs, the easiest thing to do is simply to generate one. There are a number of reasons why you might want to generate a data file. For example, recently we needed to test the file upload functionality of a little application we were writing at work, using a whole range of files of different sizes (from <1Mb up to >100Mb). Rather than hunt around for files that would fit the bill, it was a lot easier to just generate some. Another reason might be when you need to test some functionality (e.g. algorithm) to see how it would handle very large sets of data. Since you normally don't have files that are 1Gb or more in size just lying around, generating some is probably a good way to go.
+
+Fortunately the Linux command line has all the tools we need to quickly and easily generate any kind of data file that we require (I am of course assuming that as a self-respecting developer you're using or at least have access to a Linux system :)). Let us examine some of the options.
+
+Firstly, to get the obvious out of the way. Solaris has a command called mkfile which will allow you to generate a file of a particular size, but we don't have this command on Linux (or at the very least I don't have it on Ubuntu), so I'll leave it at that. If you're on Solaris feel free to investigate.
+When You Don't Care At All About The Contents Of The File
+
+You just want a file of a particular size, and don't really care what's in it or how many lines it contains – use /dev/zero. This is a special file on Linux that provides a null character every time you try to read from it. This means we can use it along with the dd command to quickly generate a file of any size.
+
+dd if=/dev/zero of=file.txt count=1024 bs=1024
+
+This command will create a file of size count*bs bytes, which in the above case will be 1Mb. This file will not contain any lines i.e.:
+
+alan@alan-ubuntu-vm:~/tmp$ dd if=/dev/zero of=file.txt count=1024 bs=1024
+1024+0 records in
+1024+0 records out
+1048576 bytes (1.0 MB) copied, 0.00510162 s, 206 MB/s
+alan@alan-ubuntu-vm:~/tmp$ ls -al file.txt
+-rw-r--r-- 1 alan alan 1048576 2010-03-21 22:25 file.txt
+alan@alan-ubuntu-vm:~/tmp$ wc -l file.txt
+0 file.txt
+
+The advantages of this approach are as follows:
+
+    it is blazingly fast taking around 1 second to generate a 1Gb file (dd if=/dev/zero of=file.txt count=1024 bs=1048576 where 1048576 bytes = 1Mb)
+    it will create a file of exactly the size that you specified
+
+The disadvantage is the fact that the file will only contain null characters and as a result will not seem to contain any lines.
+When You Don't Care About The Contents But Want Some Lines
+
+You want a file of a particular size but don't want it to just be full of nulls, other than that you don't really care. This is a similar case to the above, use /dev/urandom. This is another special file in Linux, it is a partner of /dev/random which serves as a random number generator on a Linux system. I don't want to go into the mechanics of it, but essentially /dev/random will eventually block unless your system has a lot of activity, /dev/urandom in non-blocking. We don't want blocking when we're creating our files so we use /dev/urandom (the only real difference is that /dev/urandom is actually less random but for our purposes it is random enough :)). The command is similar:
+
+dd if=/dev/urandom of=file.txt bs=2048 count=10
+
+This will create a file with bs*count random bytes, in our case 2048*10 = 20Kb. To generate a 100Mb file we would do:
+
+dd if=/dev/urandom of=file.txt bs=1048576 count=100
+
+The file will not contain anything readable, but there will be some newlines in it.
+
+alan@alan-ubuntu-vm:~/tmp$ dd if=/dev/urandom of=file.txt bs=1048576 count=100
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 13.4593 s, 7.8 MB/s
+alan@alan-ubuntu-vm:~/tmp$ wc -l file.txt
+410102 file.txt
+
+The disadvantages here are the fact that the file does not contain anything readable and the fact that it is quite a bit slower than the /dev/zero method (around 10 seconds for 100Mb). The advantage is the fact that it will contain some lines.
+You Want Readable Contents But Don't Care If It Is Duplicated
+
+In this case you want to create a file with a particular number of human-readable lines, but you don't really care if the lines are duplicated and don't need the size of the file to be precise. The best way I have found of doing this is as follows.
+
+    create a file with two lines in it
+    concatenate the file with itself and output to a different file
+    copy the new file over the original file
+    keep doing this until you get a file of a size you desire
+
+Here are the specifics. Firstly create a file with two lines in it:
+
+cat - > file.txt
+
+This commands redirects STDIN to a file, so you will need to enter two lines and then press Ctrl+D. Then you will need to run the following command:
+
+for i in {1..n}; do cat file.txt file.txt > file2.txt && mv file2.txt file.txt; done
+
+Where n is an integer. This will create a file with 2^(n+1) lines in it, by duplicating your original two lines. So to create a file with 16 lines you would do:
+
+for i in {1..3}; do cat file.txt file.txt > file2.txt && mv file2.txt file.txt; done
+
+Here are some more numbers to get you started:
+
+    n=15 will give you 65536 lines (if the original two lines were 'hello' and 'world' the file will be 384Kb)
+    n=20 will give you 2097152 lines (12Mb file with 'hello' and 'world' as the two starting lines)
+    n=25 will give you 67108864 lines (384Mb file with 'hello' and 'world' as the two starting lines)
+
+Up to n=20 the file is generated instantly, after that there will be some noticeable lag, n=25 takes a few seconds.
+
+    Here is a handy tip. If you want to quickly empty a file without deleting it, redirect /dev/null into it:
+
+    cat /dev/null > file.txt
+
+    alan@alan-ubuntu-vm:~/tmp$ ls -ltrh file.txt
+    -rw-r--r-- 1 alan alan 100M 2010-03-21 22:56 file.txt
+    alan@alan-ubuntu-vm:~/tmp$ cat /dev/null > file.txt
+    alan@alan-ubuntu-vm:~/tmp$ ls -ltrh file.txt
+    -rw-r--r-- 1 alan alan 0 2010-03-21 22:57 file.txt
+
+You Want Readable Contents And No Duplicate Lines
+
+Similar to above, but duplicate lines are an issue for you. You want a file with a certain number of lines but don't need the size to be precise. In this situation it is a bit of a tall order to do this as a one-liner using pure shell tools (although it is quite possible if you don't mind writing a little script), so we need to turn to one of our beefier friends, Perl or Ruby (whichever one you prefer). I pick Ruby – of course :). The idea is as follows.
+
+    Linux has a dictionary of words which is located at /usr/share/dict/words
+    we want to randomly pick a number of words from there to make up into a line then output the line
+    keep doing this until we get the number of lines we were looking for
+
+The command will look like this:
+
+ruby -e 'a=STDIN.readlines;X.times do;b=[];Y.times do; b << a[rand(a.size)].chomp end; puts b.join(" "); end' < /usr/share/dict/words > file.txt
+
+Where X is the number of lines in the file you want to generate and Y is the number of words in each line. So, to create a file with 100 lines and 4 words in each line you would do:
+
+ruby -e 'a=STDIN.readlines;100.times do;b=[];4.times do; b << a[rand(a.size)].chomp end; puts b.join(" "); end' < /usr/share/dict/words > file.txt
+
+This is getting a little complex for a one-liner, but once you understand what's going on, it is fairly easy to put together. We basically read in the dictionary into an array, then we randomly select words to form a line (getting rid of newlines while we're at it), we then output our newly created line and we put a loop around the whole thing –  pretty simple.
+
+With this method you're very unlikely to ever get repeated lines (although it is technically possible). It takes about 10 seconds to generate a 100Mb file (around 1 million lines with 12 words per line), which is comparable to some of our other methods. The lines we produce will not make any semantic sense but will be made up of real words and will therefore be readable.
+
+There you go, you're now able to generate any kind of data file you want (large or small) for your testing purposes. If you know of any other funky ways to generate files in Linux, then please share and don't forget to grab my RSS feed if you haven't already. Enjoy!
+
+Image by MGSpiller
+Share this:
+
+    TwitterFacebook6GoogleRedditMore
+
+Me
+Receive Rss Updates
+
+    RSS - Posts
+
+Receive Email Updates
+
+Email Address
+
+Popular Posts
+
+    How A Ruby Case Statement Works And What You Can Do With It
+    The Difference Between A Developer, A Programmer And A Computer Scientist
+    Method Arguments In Ruby
+    How To Quickly Generate A Large File On The Command Line (With Linux)
+    Why Developers Never Use State Machines
+    What Every Developer Should Know About URLs
+    Here Are Some Words That Rhyme With Orange!
+    Ruby Exceptions And Exception Handling
+    Serializing (And Deserializing) Objects With Ruby
+    Bash Shortcuts For Maximum Productivity
+
+
