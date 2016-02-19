@@ -52,12 +52,13 @@ int main(int argc, char** argv) {
     }
 
     /* make the socket reusable*/
+    /*
     socket_option = 1;
     if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &socket_option, sizeof (socket_option)) < 0) {
         printf("failed to set socket option\n");
         exit(-1);
     }
-
+     */
     /* setup the server address structure */
     bzero(&serv_addr, sizeof (serv_addr));
     serv_addr.sin_family = AF_INET;

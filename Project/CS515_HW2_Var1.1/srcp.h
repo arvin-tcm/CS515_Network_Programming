@@ -12,7 +12,7 @@
  */
 
 /* server port number */
-#define SRCP_SERV_PORT 51514
+#define SRCP_SERV_PORT 51513
 
 /* opcode */
 #define OPCODE_UPLOAD 'U'
