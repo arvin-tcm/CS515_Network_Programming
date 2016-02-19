@@ -25,10 +25,14 @@
 #include "srcp.h"
 
 static char str[80];
+static char reqBuff[BUF_SIZE + 10];
+static char filePathBuff[BUF_SIZE + 10];
+
 char* get_time_str();
 void srcp_server(int sock_fd);
 void srcp_process_client(int conn_fd);
 int srcp_process_client_data(char* buffer, int msg_size);
+void fileCopy(int conn_fd);
 
 /*
  * 
@@ -38,39 +42,32 @@ int main(int argc, char** argv) {
     struct sockaddr_in serv_addr;
     int serv_addr_len = sizeof (serv_addr);
     int socket_option;
-
     /* a simple command line argument processing */
     if (argc != 1) {
         printf("Usage: %s\n", argv[0]);
         exit(1);
     }
-
     /* open a socket */
     if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket error\n");
         exit(1);
     }
-
     /* make the socket reusable*/
-    /*
     socket_option = 1;
     if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR, &socket_option, sizeof (socket_option)) < 0) {
         printf("failed to set socket option\n");
         exit(-1);
     }
-     */
     /* setup the server address structure */
     bzero(&serv_addr, sizeof (serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(SRCP_SERV_PORT);
     serv_addr.sin_addr.s_addr = INADDR_ANY;
-
     /* bind it */
     if (bind(sock_fd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
         perror("bind error");
         exit(1);
     }
-
     /* listen for the client*/
     if (listen(sock_fd, 16) < 0) {
         perror("listen error\n");
@@ -78,8 +75,6 @@ int main(int argc, char** argv) {
     }
 
     srcp_server(sock_fd);
-
-
     /* close server sock_fd*/
     close(sock_fd);
     return (EXIT_SUCCESS);
@@ -124,22 +119,36 @@ void srcp_process_client(int conn_fd) {
     char buffer[BUF_SIZE];
     char *rtn_msg;
 
-    n = read(conn_fd, buffer, BUF_SIZE);
+    n = read(conn_fd, filePathBuff, BUF_SIZE);
     if (n < 0) {
         perror("socket read failed\n");
         exit(1);
     }
 
-    if (srcp_process_client_data(buffer, n)) {
-        rtn_msg = "OK";
+    if (srcp_process_client_data(filePathBuff, n)) {
+        switch (filePathBuff[0]) {
+            case OPCODE_DOWNLOAD:
+                rtn_msg = "Download";
+                break;
+            case OPCODE_UPLOAD:
+                rtn_msg = "Upload";
+                break;
+            default:
+                rtn_msg = "Reject";
+                break;
+        }
     } else {
-        rtn_msg = "NOK";
+        rtn_msg = "Reject";
     }
 
+    /* confirm with client */
     if (write(conn_fd, rtn_msg, strlen(rtn_msg)) < 0) {
         perror("socket write failed\n");
         exit(1);
     }
+
+    /* start file copy operation */
+    doReceive(conn_fd, filePathBuff + 1);
 }
 
 int srcp_process_client_data(char* buffer, int msg_size) {
@@ -162,7 +171,11 @@ int srcp_process_client_data(char* buffer, int msg_size) {
         }
     }
 
-    buffer[msg_size + 1] = '\0';
+    buffer[msg_size] = '\0';
     printf("message from client: %s\n", buffer);
     return result;
+}
+
+void fileCopy(int conn_fd) {
+
 }

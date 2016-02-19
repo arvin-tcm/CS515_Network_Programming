@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     int n;
     struct sockaddr_in serv_addr;
     char buffer[BUF_SIZE];
-    
+
     if (argc != 2) {
         printf("%s [server_ip]:filepath\n", argv[0]);
         exit(1);
@@ -72,9 +72,16 @@ int main(int argc, char** argv) {
         perror("socket read failed\n");
         exit(1);
     }
-
     buffer[n] = '\0';
     printf("Received answer from the server: %s\n", buffer);
+    
+    /* start transfer */
+    if(filePathBuff[0] == buffer[0]) {
+        printf("transfer confirm\n");
+        doTransfer(sock_fd, filePathBuff + 1);
+    }
+    
+    
     close(sock_fd);
     return (EXIT_SUCCESS);
 }

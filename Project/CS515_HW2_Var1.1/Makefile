@@ -8,11 +8,11 @@ CFLAGS		=
 CC		= gcc
 
 # client variables
-OBJS_C		= srcp_clnt.o
+OBJS_C		= srcp_clnt.o srcp_util.o
 TARGET_C	= srcp_clnt
 
 # client variables
-OBJS_S		= srcp_srv.o
+OBJS_S		= srcp_srv.o srcp_util.o
 TARGET_S	= srcp_srv
 
 # all targets 

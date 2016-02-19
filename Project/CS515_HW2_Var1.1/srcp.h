@@ -17,22 +17,18 @@
 /* opcode */
 #define OPCODE_UPLOAD 'U'
 #define OPCODE_DOWNLOAD 'D'
-#define OPCODE_REJECT 'X'
+#define OPCODE_REJECT 'R'
 
 /* request terminator */
 #define REQ_TERMINATOR '='
+#define REQ_DEFAULT '!'
 
 /* buff size */
-#define BUF_SIZE 2048
+#define BUF_SIZE 128
 
 #define SUCCESS 1
 #define NOT_SUCCESS 0
 
-
-
-
-
-
-
-
-
+/* application layer functions */
+extern int doTransfer(int fd, char *filePath);
+extern int doReceive(int fd, char *filePath);

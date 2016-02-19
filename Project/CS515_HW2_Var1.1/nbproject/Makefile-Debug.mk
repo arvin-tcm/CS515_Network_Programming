@@ -36,7 +36,8 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/srcp_clnt.o \
-	${OBJECTDIR}/srcp_srv.o
+	${OBJECTDIR}/srcp_srv.o \
+	${OBJECTDIR}/srcp_util.o
 
 
 # C Compiler Flags
@@ -72,6 +73,11 @@ ${OBJECTDIR}/srcp_srv.o: srcp_srv.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/srcp_srv.o srcp_srv.c
+
+${OBJECTDIR}/srcp_util.o: srcp_util.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -g -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/srcp_util.o srcp_util.c
 
 # Subprojects
 .build-subprojects:
