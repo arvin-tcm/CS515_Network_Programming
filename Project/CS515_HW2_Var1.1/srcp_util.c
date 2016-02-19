@@ -23,9 +23,11 @@ int doTransfer(int fd, char *filePath) {
         /* read a block from file */
         rd_count = read(in_fd, buffer + 1, BUF_SIZE - 1);
         buffer[0] = REQ_DEFAULT;
+        printf("packet: %s\n", buffer);
         if (rd_count < 0) {
             buffer[0] = REQ_TERMINATOR;
             buffer[1] = '\0';
+            printf("last packet: %s\n", buffer);
             write(fd, buffer, strlen(buffer));
             break; /* end of the file */
         }
@@ -35,6 +37,7 @@ int doTransfer(int fd, char *filePath) {
             perror("write failed\n");
             exit(1);
         }
+        printf("packet send\n");
     }
     close(in_fd);
     return SUCCESS;
@@ -55,6 +58,7 @@ int doReceive(int fd, char *filePath) {
     while (1) {
         /* read a block from socket */
         rd_count = read(fd, buffer, BUF_SIZE);
+        printf("packet: %s\n", buffer);
         if (buffer[0] == REQ_TERMINATOR) {
             break;
         }
