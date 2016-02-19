@@ -163,6 +163,6 @@ int srcp_process_client_data(char* buffer, int msg_size) {
     }
 
     buffer[msg_size + 1] = '\0';
-
+    printf("message from client: %s\n", buffer);
     return result;
 }
