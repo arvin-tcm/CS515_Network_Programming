@@ -25,7 +25,7 @@
 #include "srcp.h"
 
 static char str[80];
-char get_time_str();
+char* get_time_str();
 void srcp_server(int sock_fd);
 void srcp_process_client(int conn_fd);
 int srcp_process_client_data(char* buffer, int msg_size);
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     return (EXIT_SUCCESS);
 }
 
-char get_time_str() {
+char* get_time_str() {
     time_t t;
     int n;
 
