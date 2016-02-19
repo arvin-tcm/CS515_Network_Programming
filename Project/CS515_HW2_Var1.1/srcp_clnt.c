@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     /* setup the server address and connect to it */
     bzero(&serv_addr, sizeof (serv_addr));
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = SRCP_SERV_PORT;
+    serv_addr.sin_port = htons(SRCP_SERV_PORT);
     inet_pton(AF_INET, argv[1], &serv_addr.sin_addr);
 
     if (connect(sock_fd, (struct sockaddr *) &serv_addr, sizeof (serv_addr)) < 0) {
