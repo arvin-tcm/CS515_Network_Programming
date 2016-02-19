@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
     }
 
     /* listen for the client*/
-    if (listen(socket, 16) < 0) {
+    if (listen(sock_fd, 16) < 0) {
         perror("listen error\n");
         exit(1);
     }
