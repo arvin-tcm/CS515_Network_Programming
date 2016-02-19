@@ -10,7 +10,7 @@
 
 int doTransfer(int fd, char *filePath) {
     int in_fd, rd_count, wr_count;
-    char buffer[BUF_SIZE];
+    char buffer[BUF_SIZE + 10];
 
     /* open the input file */
     in_fd = open(filePath, O_RDONLY);
@@ -45,7 +45,7 @@ int doTransfer(int fd, char *filePath) {
 
 int doReceive(int fd, char *filePath) {
     int out_fd, rd_count, wr_count;
-    char buffer[BUF_SIZE];
+    char buffer[BUF_SIZE + 10];
 
     /* open the output file */
     out_fd = open(filePath, O_WRONLY | O_CREAT, 6044);
