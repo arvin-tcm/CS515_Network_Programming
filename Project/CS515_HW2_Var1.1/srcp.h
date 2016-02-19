@@ -20,7 +20,7 @@
 #define OPCODE_REJECT 'R'
 
 /* request terminator */
-#define REQ_TERMINATOR '='
+#define REQ_TERMINATOR '`'
 #define REQ_DEFAULT '!'
 
 /* buff size */
