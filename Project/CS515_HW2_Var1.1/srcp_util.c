@@ -27,7 +27,7 @@ int doTransfer(int fd, char *filePath) {
             buffer[0] = REQ_TERMINATOR;
             buffer[rd_count + 1] = '\0';
             printf("last packet: %s\n", buffer);
-            write(fd, buffer, strlen(buffer));
+            write(fd, buffer, rd_count + 1);
             break; /* end of the file */
         }
         /* write a block to socket */
