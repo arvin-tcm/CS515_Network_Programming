@@ -31,8 +31,7 @@ static char filePathBuff[BUF_SIZE + 10];
 char* get_time_str();
 void srcp_server(int sock_fd);
 void srcp_process_client(int conn_fd);
-int srcp_process_client_data(char* buffer, int msg_size);
-void fileCopy(int conn_fd);
+char srcp_process_client_data(char* buffer, int msg_size);
 
 /*
  * 
@@ -73,7 +72,6 @@ int main(int argc, char** argv) {
         perror("listen error\n");
         exit(1);
     }
-
     srcp_server(sock_fd);
     /* close server sock_fd*/
     close(sock_fd);
@@ -83,7 +81,6 @@ int main(int argc, char** argv) {
 char* get_time_str() {
     time_t t;
     int n;
-
     t = time(NULL);
     n = sprintf(str, "\n%s", ctime(&t));
     str[n - 1] = '\0';
@@ -97,7 +94,6 @@ void srcp_server(int sock_fd) {
     time_t t;
     struct sockaddr_in clnt_addr;
     int clnt_addr_len = sizeof (clnt_addr);
-
     /* main server loop to accept all the client */
     while (1) {
         conn_fd = accept(sock_fd, (struct sockaddr *) &clnt_addr, (socklen_t *) & clnt_addr_len);
@@ -105,11 +101,9 @@ void srcp_server(int sock_fd) {
             perror("accept error");
             exit(1);
         }
-
         /* record the connection */
         (void) inet_ntop(AF_INET, &clnt_addr.sin_addr, buffer, BUF_SIZE);
         printf("%s -- %s.%d\n", get_time_str(), buffer, ntohs(clnt_addr.sin_port));
-
         srcp_process_client(conn_fd);
     }
 }
@@ -118,27 +112,21 @@ void srcp_process_client(int conn_fd) {
     int n;
     char buffer[BUF_SIZE];
     char *rtn_msg;
-
     n = read(conn_fd, filePathBuff, BUF_SIZE);
     if (n < 0) {
         perror("socket read failed\n");
         exit(1);
     }
-
-    if (srcp_process_client_data(filePathBuff, n)) {
-        switch (filePathBuff[0]) {
-            case OPCODE_DOWNLOAD:
-                rtn_msg = "Download";
-                break;
-            case OPCODE_UPLOAD:
-                rtn_msg = "Upload";
-                break;
-            default:
-                rtn_msg = "Reject";
-                break;
-        }
-    } else {
-        rtn_msg = "Reject";
+    switch (srcp_process_client_data(filePathBuff, n)) {
+        case OPCODE_DOWNLOAD_TO_CLIENT:
+            rtn_msg = "Download";
+            break;
+        case OPCODE_UPLOAD_TO_SERVER:
+            rtn_msg = "Upload";
+            break;
+        default:
+            rtn_msg = "Reject";
+            break;
     }
 
     /* confirm with client */
@@ -146,19 +134,26 @@ void srcp_process_client(int conn_fd) {
         perror("socket write failed\n");
         exit(1);
     }
-
     /* start file copy operation */
-    doTransfer(conn_fd, filePathBuff + 1);
+    switch (filePathBuff[0]) {
+        case OPCODE_DOWNLOAD_TO_CLIENT:
+            doTransfer(conn_fd, filePathBuff + 1);
+            break;
+        case OPCODE_UPLOAD_TO_SERVER:
+            doReceive(conn_fd, filePathBuff + 1);
+            break;
+        default:
+            rtn_msg = "Reject";
+            break;
+    }
 }
 
-int srcp_process_client_data(char* buffer, int msg_size) {
+char srcp_process_client_data(char* buffer, int msg_size) {
     int i;
     int result = 1;
-
     if (msg_size > BUF_SIZE - 2) {
         msg_size = BUF_SIZE - 2;
     }
-
     for (i = 0; i < msg_size; i++) {
         if (isprint(buffer[i])) {
             /* replace newline with - */
@@ -170,12 +165,7 @@ int srcp_process_client_data(char* buffer, int msg_size) {
             buffer[i] = '-';
         }
     }
-
     buffer[msg_size] = '\0';
     printf("message from client: %s\n", buffer);
-    return result;
-}
-
-void fileCopy(int conn_fd) {
-
+    return buffer[0];
 }

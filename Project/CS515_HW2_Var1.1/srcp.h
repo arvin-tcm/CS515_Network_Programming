@@ -15,8 +15,8 @@
 #define SRCP_SERV_PORT 51513
 
 /* opcode */
-#define OPCODE_UPLOAD 'U'
-#define OPCODE_DOWNLOAD 'D'
+#define OPCODE_UPLOAD_TO_SERVER 'U'
+#define OPCODE_DOWNLOAD_TO_CLIENT 'D'
 #define OPCODE_REJECT 'R'
 
 /* request terminator */

@@ -21,10 +21,10 @@
 
 #define DATA_BUF_SIZE 128
 static char ipBuff[BUF_SIZE + 10];
-static char filePathBuff[BUF_SIZE + 10];
-
-int parseReq(char *inBuf, char opCode);
-
+static char serverFilePathBuff[BUF_SIZE + 10];
+static char clientFilePathBuff[BUF_SIZE + 10];
+static char opCode;
+char parsePath(char *source, char *destination);
 /*
  * 
  */
@@ -34,20 +34,18 @@ int main(int argc, char** argv) {
     struct sockaddr_in serv_addr;
     char buffer[BUF_SIZE];
 
-    if (argc != 2) {
-        printf("%s [server_ip]:filepath\n", argv[0]);
+    if (argc != 3) {
+        printf("%s sourceFilePath destinationfilePath\n", argv[0]);
         exit(1);
     }
-
     /* parse the argument */
-    parseReq(argv[1], 'U');
+    parsePath(argv[1], argv[2]);
 
     /* open a socket */
     if ((sock_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket error\n");
         exit(1);
     }
-
     /* setup the server address and connect to it */
     bzero(&serv_addr, sizeof (serv_addr));
     serv_addr.sin_family = AF_INET;
@@ -58,14 +56,11 @@ int main(int argc, char** argv) {
         perror("connect error");
         exit(1);
     }
-
-
     /* send the registration message to the server */
-    if (write(sock_fd, filePathBuff, strlen(filePathBuff)) < 0) {
+    if (write(sock_fd, serverFilePathBuff, strlen(serverFilePathBuff)) < 0) {
         perror("socket write failed\n");
         exit(1);
     }
-
     /* wait for the reply from the server */
     n = read(sock_fd, buffer, DATA_BUF_SIZE);
     if (n < 0) {
@@ -74,28 +69,46 @@ int main(int argc, char** argv) {
     }
     buffer[n] = '\0';
     printf("Received answer from the server: %s\n", buffer);
-    
-    /* start transfer */
-    if(filePathBuff[0] == buffer[0]) {
-        printf("transfer confirm\n");
-        doReceive(sock_fd, filePathBuff + 1);
+    if (opCode != buffer[0]) {
+        printf("operation confirm failed\n");
+        exit(1);
     }
-    
-    
+    /* start file operation */
+    switch (opCode) {
+        case OPCODE_DOWNLOAD_TO_CLIENT:
+            doReceive(sock_fd, clientFilePathBuff);
+            break;
+        case OPCODE_UPLOAD_TO_SERVER:
+            doTransfer(sock_fd, clientFilePathBuff);
+            break;
+        default:
+            break;
+    }
     close(sock_fd);
     return (EXIT_SUCCESS);
 }
 
-int parseReq(char *inBuf, char opCode) {
-    char *p;
-    p = strchr(inBuf, ':');
-    if (p == NULL) {
-        printf("Invalid srcp file path");
+char parsePath(char *source, char *destination) {
+    char *s, *d;
+    s = strchr(source, ':');
+    d = strchr(destination, ':');
+    if (s != NULL && d == NULL) {
+        opCode = OPCODE_DOWNLOAD_TO_CLIENT;
+        *s = '\0';
+        serverFilePathBuff[0] = opCode;
+        strcpy(serverFilePathBuff + 1, s + 1);
+        strcpy(clientFilePathBuff, destination);
+        strcpy(ipBuff, source);
+    } else if (s == NULL && d != NULL) {
+        opCode = OPCODE_UPLOAD_TO_SERVER;
+        *d = '\0';
+        serverFilePathBuff[0] = opCode;
+        strcpy(serverFilePathBuff + 1, source);
+        strcpy(clientFilePathBuff, d + 1);
+        strcpy(ipBuff, destination);
+    } else {
+        printf("invalid file path\n");
         exit(1);
     }
-    *p = '\0';
-    strcpy(ipBuff, inBuf);
-    filePathBuff[0] = opCode;
-    strcpy(filePathBuff + 1, p + 1);
-    return SUCCESS;
+    return opCode;
 }
