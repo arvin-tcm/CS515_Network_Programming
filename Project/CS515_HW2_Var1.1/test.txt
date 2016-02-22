@@ -1,0 +1,8 @@
+I am a npu student
+I teach the following classes:
+cscs204
+cs230
+cs350
+cs360
+cs385
+cs480

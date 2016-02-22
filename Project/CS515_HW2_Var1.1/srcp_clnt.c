@@ -120,8 +120,10 @@ char parsePath(char *source, char *destination) {
 int hostname_to_ip(char *hostName) {
     struct hostent *he;
     struct in_addr **addr_list;
+    char buffer[strlen(hostName) + 1];
     int i;
-    if ((he = gethostname(hostName)) == NULL) {
+    strcpy(buffer, hostName);
+    if ((he = gethostname(buffer)) == NULL) {
         herror("get host by name");
         exit(1);
     }
