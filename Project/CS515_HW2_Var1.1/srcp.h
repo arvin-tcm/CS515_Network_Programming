@@ -24,7 +24,7 @@
 #define REQ_DEFAULT 'D'
 
 /* buff size */
-#define BUF_SIZE 128
+#define BUF_SIZE 16
 
 #define SUCCESS 1
 #define NOT_SUCCESS 0

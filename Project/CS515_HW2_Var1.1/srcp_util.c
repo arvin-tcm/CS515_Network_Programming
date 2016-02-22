@@ -56,11 +56,10 @@ int doReceive(int fd, char *filePath) {
         /* read a block from socket */
         rd_count = read(fd, buffer, BUF_SIZE);
         printf("packet: %s\n", buffer);
+        wr_count = write(out_fd, buffer + 1, rd_count - 1);
         if (buffer[0] == REQ_TERMINATOR) {
-            write(out_fd, buffer + 1, rd_count - 1);
             break;
         }
-        wr_count = write(out_fd, buffer + 1, rd_count - 1);
         if (wr_count < 0) {
             perror("write failed\n");
             exit(1);
