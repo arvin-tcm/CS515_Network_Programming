@@ -100,16 +100,16 @@ char parsePath(char *source, char *destination) {
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, s + 1);
         strcpy(clientFilePathBuff, destination);
-        //strcpy(ipBuff, source);
-        hostname_to_ip(source);
+        strcpy(ipBuff, source);
+        //hostname_to_ip(source);
     } else if (s == NULL && d != NULL) {
         opCode = OPCODE_UPLOAD_TO_SERVER;
         *d = '\0';
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, source);
         strcpy(clientFilePathBuff, d + 1);
-        //strcpy(ipBuff, destination);
-        hostname_to_ip(destination);
+        strcpy(ipBuff, destination);
+        //hostname_to_ip(destination);
     } else {
         printf("invalid file path\n");
         exit(1);
