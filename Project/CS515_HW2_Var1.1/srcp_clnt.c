@@ -100,6 +100,8 @@ char parsePath(char *source, char *destination) {
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, s + 1);
         strcpy(clientFilePathBuff, destination);
+        
+        /* local VM cannot resolve the server IP*/
         strcpy(ipBuff, source);
         //hostname_to_ip(source);
     } else if (s == NULL && d != NULL) {
@@ -108,6 +110,8 @@ char parsePath(char *source, char *destination) {
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, source);
         strcpy(clientFilePathBuff, d + 1);
+        
+        /* local VM cannot resolve the server IP*/
         strcpy(ipBuff, destination);
         //hostname_to_ip(destination);
     } else {

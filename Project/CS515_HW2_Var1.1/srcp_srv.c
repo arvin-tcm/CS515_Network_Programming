@@ -128,7 +128,6 @@ void srcp_process_client(int conn_fd) {
             rtn_msg = "Reject";
             break;
     }
-
     /* confirm with client */
     if (write(conn_fd, rtn_msg, strlen(rtn_msg)) < 0) {
         perror("socket write failed\n");
