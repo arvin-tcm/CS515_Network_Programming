@@ -25,6 +25,8 @@ static char serverFilePathBuff[BUF_SIZE + 10];
 static char clientFilePathBuff[BUF_SIZE + 10];
 static char opCode;
 char parsePath(char *source, char *destination);
+int hostname_to_ip(char *hostName);
+
 /*
  * 
  */
@@ -98,17 +100,32 @@ char parsePath(char *source, char *destination) {
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, s + 1);
         strcpy(clientFilePathBuff, destination);
-        strcpy(ipBuff, source);
+        //strcpy(ipBuff, source);
+        hostname_to_ip(source);
     } else if (s == NULL && d != NULL) {
         opCode = OPCODE_UPLOAD_TO_SERVER;
         *d = '\0';
         serverFilePathBuff[0] = opCode;
         strcpy(serverFilePathBuff + 1, source);
         strcpy(clientFilePathBuff, d + 1);
-        strcpy(ipBuff, destination);
+        //strcpy(ipBuff, destination);
+        hostname_to_ip(destination);
     } else {
         printf("invalid file path\n");
         exit(1);
     }
     return opCode;
+}
+
+int hostname_to_ip(char *hostName) {
+    struct hostent *he;
+    struct in_addr **addr_list;
+    int i;
+    if ((he = gethostname(hostName)) == NULL) {
+        herror("get host by name");
+        exit(1);
+    }
+    addr_list = (struct in_addr*) he->h_addr_list;
+    strcpy(ipBuff, inet_ntoa(*addr_list[0]));
+    return SUCCESS;
 }
