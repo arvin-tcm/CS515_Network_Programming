@@ -22,7 +22,7 @@ int doTransfer(int fd, char *filePath) {
         /* read a block from file */
         rd_count = read(in_fd, buffer + 1, BUF_SIZE - 1);
         buffer[0] = REQ_DEFAULT;
-        printf("packet: %s\n", buffer);
+        //printf("packet: %s\n", buffer);
         if (rd_count < BUF_SIZE - 1) {
             buffer[0] = REQ_TERMINATOR;
             buffer[rd_count + 1] = '\0';
@@ -55,7 +55,7 @@ int doReceive(int fd, char *filePath) {
     while (1) {
         /* read a block from socket */
         rd_count = read(fd, buffer, BUF_SIZE);
-        printf("packet: %s\n", buffer);
+        //printf("packet: %s\n", buffer);
         wr_count = write(out_fd, buffer + 1, rd_count - 1);
         if (buffer[0] == REQ_TERMINATOR) {
             break;
