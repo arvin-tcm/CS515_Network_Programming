@@ -36,7 +36,7 @@ int doTransfer(int fd, char *filePath) {
             perror("write failed\n");
             exit(1);
         }
-        printf("packet send\n");
+        //printf("packet send\n");
     }
     close(in_fd);
     return SUCCESS;
