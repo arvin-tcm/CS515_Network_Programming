@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
         exit(1);
     }
     buffer[n] = '\0';
-    printf("Received answer from the server: %s\n", buffer);
+    //printf("Received answer from the server: %s\n", buffer);
     if (opCode != buffer[0]) {
         printf("operation confirm failed\n");
         exit(1);
