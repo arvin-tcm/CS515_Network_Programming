@@ -26,7 +26,7 @@ int doTransfer(int fd, char *filePath) {
         if (rd_count < BUF_SIZE - 1) {
             buffer[0] = REQ_TERMINATOR;
             buffer[rd_count + 1] = '\0';
-            printf("last packet: %s\n", buffer);
+            //printf("last packet: %s\n", buffer);
             write(fd, buffer, rd_count + 1);
             break; /* end of the file */
         }
